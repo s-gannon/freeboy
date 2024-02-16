@@ -1,33 +1,25 @@
 use <MCAD/boxes.scad>
 
-//Fidelity of all objects rendered, increase for final print
+// Fidelity of all objects rendered, increase for final print
 $fn = 50;
 
-// Main housing
-big_rad = 3.75;
-small_rad = 3;
-thickness_in = 1/6;
-length = 8;
-housing_size = 15;
-screen_size_in = [4.76378, 2.992126, 0.1653543];
+// Display (measurements in inches)
+lcd_housing      = [6.75   , 4.375 , 0.71875];
+lcd_bezel_inset  = [6.0625 , 3.375 , 0.12515];
+lcd_bezel_offset = [0.34375, 0.5   , 1.09375];
+port_housing     = [5.375  , 4.1875, 0.5    ];
 
-function neg_log(x) = log(-x);
-module half_cylinder(height, rad1, rad2){
-    intersection(){
-        cylinder(height, rad1, rad2);
-        translate([0, -max(rad1, rad2), 0])cube([max(rad1, rad2), max(rad1, rad2) * 2, height]);
-    }
+module monitor(){
+	difference(){
+		translate([0, 0, 0.5])
+		cube(lcd_housing);
+		translate(lcd_bezel_offset)
+		cube(lcd_bezel_inset);
+	}
+	translate([0.6875, 0.09375, 0])
+	cube(port_housing);
 }
 
-//Screen
-color("grey")
-translate([0.5, -screen_size_in.y / 2, 4])
-cube(screen_size_in);
+module libre_renegade(){}
 
-//Housing
-rotate([0,90,0])
-difference(){
-    cylinder(length, big_rad, small_rad);
-	translate([0,0,-1.5])
-	half_cylinder(length + 2, big_rad - thickness_in, small_rad  - thickness_in);
-}
+monitor();
